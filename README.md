@@ -1,3 +1,5 @@
+![WOODY SOO](screenshot.png)
+
 ## ✨ Features
 
 Replaces the Wordpress connection system with the SSO (single sign on) of Raccourci Agency: LE STUDIO
