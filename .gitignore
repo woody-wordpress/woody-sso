@@ -1,0 +1,9 @@
+# Global
+.DS_Store
+*.log
+.idea
+
+# Composer
+bin
+vendor/*
+!vendor/.gitkeep
