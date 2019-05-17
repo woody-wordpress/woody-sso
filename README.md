@@ -1,12 +1,3 @@
-Contributors: leopoiroux
-Tags: Woody, OAuth 2, SSO, Single Sign On, OAuth 2.0, WordPress SSO, Single Sign On, Client, OAuth client
-Requires at least: 4.6
-Requires PHP: 5.6
-Tested up to: 5.2
-Stable tag: 1.0.0
-License: GPL2
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
-
 ## ✨ Features
 
 Replaces the Wordpress connection system with the SSO (single sign on) of Raccourci Agency: LE STUDIO

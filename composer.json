@@ -2,7 +2,7 @@
     "name": "raccourci/woody-sso",
     "type": "wordpress-plugin",
     "description": "Replaces the Wordpress connection system with the SSO (single sign on) of Raccourci Agency: LE STUDIO",
-    "license": "GPL2",
+    "license": "GPL-2.0",
     "authors": [{
             "name": "Léo POIROUX",
             "email": "leo@raccourci.fr"
