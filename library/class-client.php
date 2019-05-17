@@ -13,7 +13,7 @@ defined('ABSPATH') or die('No script kiddies please!');
 class WOODY_SSO_Client
 {
     /** Version */
-    public $version = "1.0.0";
+    public $version = "1.1";
 
     /** Server Instance */
     public static $_instance = null;
