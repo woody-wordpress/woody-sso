@@ -20,7 +20,22 @@
 </script>
 
 <?php
-if (!empty($_GET['error']) && $_GET['error'] == 'restricted-access') {
-    echo '<div id="login_error" style="clear:both;margin-top:15px;">Vous ne disposez pas des droits suffisants pour accéder à ce site</div>';
+if (!empty($_GET['error'])) {
+    switch ($_GET['error']) {
+        case 'restricted-access':
+            $message = 'Vous ne disposez pas des droits suffisants pour accéder à ce site';
+            break;
+        case 'session-start-failed':
+            $message = 'La session n\'a pas réussi à démarrer';
+            break;
+        case 'invalid-state':
+            $message = 'Le jeton de validation est erroné';
+            break;
+        default:
+            $message = 'Une erreur inconnue est survenue';
+            break;
+    }
+
+    echo '<div id="login_error" style="clear:both;margin-top:15px;">' . $message . '</div>';
 }
 ?>

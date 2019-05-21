@@ -7,7 +7,6 @@
 
 defined('ABSPATH') or die('No script kiddies please!');
 
-
 // Redirect the user back to the home page if logged in.
 if (is_user_logged_in()) {
     wp_redirect(home_url());
@@ -19,10 +18,19 @@ $options = get_option('woody_sso_options');
 $user_redirect_set = $options['redirect_to_dashboard'] == '1' ? get_dashboard_url() : site_url();
 $user_redirect = apply_filters('wpssoc_user_redirect_url', $user_redirect_set);
 
+// Session start
+if (empty($_SESSION)) {
+    $session_start = session_start();
+    if (!$session_start) {
+        wp_redirect(wp_login_url(home_url()) . '&error=session-start-failed');
+        exit;
+    }
+}
+
 // Authenticate Check and Redirect
 use function Sodium\bin2hex;
 
-if (!isset($_GET['code'])) {
+if (!isset($_GET['code']) || empty($_SESSION['state'])) {
     $_SESSION['state'] = bin2hex(random_bytes(16));
     $params = array(
         'oauth'         => 'authorize',

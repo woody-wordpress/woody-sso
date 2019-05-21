@@ -1,7 +1,11 @@
-# Global
+# Common ignore
 .DS_Store
-*.log
+.Thumbs
 .idea
+._*
+*.log
+node_modules
+composer.lock
 
 # Composer
 bin
