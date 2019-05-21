@@ -25,12 +25,6 @@ if (!empty($_GET['error'])) {
         case 'restricted-access':
             $message = 'Vous ne disposez pas des droits suffisants pour accéder à ce site';
             break;
-        case 'session-start-failed':
-            $message = 'La session n\'a pas réussi à démarrer';
-            break;
-        case 'invalid-state':
-            $message = 'Le jeton de validation est erroné';
-            break;
         default:
             $message = 'Une erreur inconnue est survenue';
             break;
