@@ -1,6 +1,6 @@
 <?php
 /**
- * @package WOODY SSO
+ * @package Woody SSO
  * @author Léo POIROUX <leo@raccourci.fr>
  * @author Jeremy LEGENDRE <jeremy.legendre@raccourci.fr>
  */

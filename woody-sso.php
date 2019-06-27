@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Woody SSO
  * Plugin URI: https://github.com/raccourci/woody-sso
- * Version: 1.1
+ * Version: 1.3.2
  * Description: Replaces the Wordpress connection system with the SSO of Raccourci Agency: THE STUDIO
  * Author: Raccourci Agency
  * Author URI: https://www.raccourci.fr

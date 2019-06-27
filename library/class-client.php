@@ -1,6 +1,6 @@
 <?php
 /**
- * @package WOODY SSO
+ * @package Woody SSO
  * @author Léo POIROUX <leo@raccourci.fr>
  * @author Jeremy LEGENDRE <jeremy.legendre@raccourci.fr>
  */
@@ -12,9 +12,6 @@ defined('ABSPATH') or die('No script kiddies please!');
  */
 class WOODY_SSO_Client
 {
-    /** Version */
-    public $version = "1.1";
-
     /** Server Instance */
     public static $_instance = null;
 
