@@ -25,5 +25,7 @@ composer require raccourci/woody-sso
 Thank you to all the people who have already contributed to Woody SSO !
 Special thank to Justin Greer <justin@justin-greer.com> for his inspirational plugin WP Single Sign On Client.
 
+For future contributors, please read our [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md)
+
 ## 🆓 License
 Woody SSO is open-sourced software licensed under the [GPL2](LICENSE).
