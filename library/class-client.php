@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @package Woody SSO
  * @author Léo POIROUX <leo@raccourci.fr>

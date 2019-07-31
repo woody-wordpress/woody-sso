@@ -1,5 +1,5 @@
 {
-    "name": "raccourci/woody-sso",
+    "name": "woody-wordpress/sso",
     "type": "wordpress-plugin",
     "description": "This plugin replaces the native wordpress connection system with the SSO (single sign on) button of Raccourci Agency: THE STUDIO",
     "license": "GPL-2.0",
