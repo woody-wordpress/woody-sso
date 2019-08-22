@@ -12,7 +12,7 @@
 
 This plugin replaces the native wordpress connection system with the SSO (single sign on) button of Raccourci Agency: THE STUDIO
 
-## 👉🏻 Installation & Usage
+## :fire: Installation & Usage
 
 First, install Woody SSO via the Composer package manager:
 
@@ -20,7 +20,7 @@ First, install Woody SSO via the Composer package manager:
 composer require woody-wordpress/woody-sso
 ```
 
-## 👏 Contributors
+## :metal: Contributors
 
 Thank you to all the people who have already contributed to Woody SSO !
 Special thank to Justin Greer <justin@justin-greer.com> for his inspirational plugin WP Single Sign On Client.
@@ -30,11 +30,11 @@ For future contributors, please read our [Contributor Covenant Code of Conduct](
 Header photo by [John Lee on Unsplash](https://unsplash.com/@john_artifexfilms?utm_medium=referral&utm_campaign=photographer-credit&utm_content=creditBadge)<br/>
 [![Header photo by John Lee on Unsplash](https://img.shields.io/badge/John%20Lee-black.svg?style=flat-square&logo=unsplash&logoWidth=10)](https://unsplash.com/@john_artifexfilms?utm_medium=referral&utm_campaign=photographer-credit&utm_content=creditBadge)
 
-## 🆓 License
+## :bookmark: License
 
 Woody SSO is open-sourced software licensed under the [GPL2](LICENSE).
 
-## 💝 Sponsoring
+## :crown: Sponsoring
 
 Woody is a digital ecosystem co-financed by the Regional Tourism Committee of Brittany for [eBreizh Connexion](http://www.ebreizhconnexion.bzh)
 
