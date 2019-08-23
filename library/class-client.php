@@ -90,6 +90,8 @@ class WOODY_SSO_Client
     public static function logout()
     {
         setcookie(WOODY_SSO_ACCESS_TOKEN, '', time() - YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+        setcookie('woody_sso_refresh_token', '', time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+        setcookie('woody_sso_expiration_token', '', time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
     }
 
     /**
