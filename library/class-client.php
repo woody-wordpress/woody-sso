@@ -30,6 +30,7 @@ class WOODY_SSO_Client
     public function __construct()
     {
         add_action("init", array($this, "includes"));
+        add_action('init', array($this, 'refreshToken'));
         add_action('login_form', array($this, 'form_button'));
         add_action('wp_logout', array($this, 'logout'));
         add_shortcode('sso_button', array($this, 'shortcode'));
@@ -89,5 +90,48 @@ class WOODY_SSO_Client
     public static function logout()
     {
         setcookie(WOODY_SSO_ACCESS_TOKEN, '', time() - YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+        setcookie('woody_sso_refresh_token', '', time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+        setcookie('woody_sso_expiration_token', '', time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+    }
+
+    /**
+     * Refresh user session access token if time is almost exceeded
+     */
+    public function refreshToken(){
+        if(is_user_logged_in()){
+            $options = get_option('woody_sso_options');
+            $access_token_expiration = $_COOKIE['woody_sso_expiration_token'];
+            $refresh_token = $_COOKIE['woody_sso_refresh_token'];
+
+            // If current token is going to expire, refresh token
+            if( $access_token_expiration > time() - 300 && $access_token_expiration < time() ) {
+                // REFRESH TOKEN
+                $params = array(
+                    'grant_type' => 'refresh_token',
+                    'client_id' => $options['client_id'],
+                    'client_secret' => $options['client_secret'],
+                    'refresh_token' => $refresh_token,
+                );
+
+                $curl = curl_init();
+                $args = array(
+                    CURLOPT_URL => $options['server_url'] . '/oauth/v2/token',
+                    CURLOPT_POST => true,
+                    CURLOPT_POSTFIELDS => $params,
+                    CURLOPT_RETURNTRANSFER => true
+                );
+                curl_setopt_array($curl, $args);
+
+                $tokens = json_decode(curl_exec($curl));
+
+                if($tokens){
+                    setcookie(WOODY_SSO_ACCESS_TOKEN, $tokens->access_token, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+                    setcookie('woody_sso_refresh_token', $tokens->refresh_token, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+                    setcookie('woody_sso_expiration_token', time() + $tokens->expires_in, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+                }
+
+                curl_close($curl);
+            }
+        }
     }
 }

@@ -26,7 +26,9 @@ if (!isset($_GET['code'])) {
         'client_id'     => $options['client_id'],
         'client_secret' => $options['client_secret'],
         'redirect_uri'  => site_url('/oauth/v2/auth?auth=sso'),
-        'application'   => 'wordpress'
+        'application'   => 'wordpress',
+        'idp_application' => 'woody',
+        'site_key'      => WP_SITE_KEY
     );
 
     wp_redirect($options['server_url'] . '/oauth/v2/auth?' . http_build_query($params));
@@ -119,12 +121,6 @@ if (!empty($_GET['code'])) {
             $user->add_role($role);
         }
 
-        if (is_user_logged_in()) {
-            setcookie(WOODY_SSO_ACCESS_TOKEN, $tokens->access_token, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
-            do_action('wp_login', $user->user_login, $user);
-            wp_redirect($user_redirect);
-            exit;
-        }
     } else {
         // Already Registered... Log the User In
         $random_password = __('User already exists.  Password inherited.');
@@ -158,14 +154,17 @@ if (!empty($_GET['code'])) {
         wp_clear_auth_cookie();
         wp_set_current_user($user->ID);
         wp_set_auth_cookie($user->ID);
-
-        if (is_user_logged_in()) {
-            setcookie(WOODY_SSO_ACCESS_TOKEN, $tokens->access_token, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
-            do_action('wp_login', $user->user_login, $user);
-            wp_redirect($user_redirect);
-            exit;
-        }
     }
+
+    if (is_user_logged_in()) {
+        setcookie(WOODY_SSO_ACCESS_TOKEN, $tokens->access_token, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+        setcookie('woody_sso_refresh_token', $tokens->refresh_token, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+        setcookie('woody_sso_expiration_token', time() + $tokens->expires_in, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+        do_action('wp_login', $user->user_login, $user);
+        wp_redirect($user_redirect);
+        exit;
+    }
+
 
     exit('Single Sign On Failed.');
 }
