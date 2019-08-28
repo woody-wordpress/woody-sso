@@ -27,8 +27,6 @@ if (!isset($_GET['code'])) {
         'client_secret' => $options['client_secret'],
         'redirect_uri'  => site_url('/oauth/v2/auth?auth=sso'),
         'application'   => 'wordpress',
-        'idp_application' => 'woody',
-        'site_key'      => WP_SITE_KEY
     );
 
     wp_redirect($options['server_url'] . '/oauth/v2/auth?' . http_build_query($params));
@@ -57,7 +55,9 @@ if (!empty($_GET['code'])) {
             'code'          => $code,
             'client_id'     => $options['client_id'],
             'client_secret' => $options['client_secret'],
-            'redirect_uri'  => site_url('/oauth/v2/auth?auth=sso')
+            'redirect_uri'  => site_url('/oauth/v2/auth?auth=sso'),
+            'idp_application' => 'woody',
+            'site_key'      => WP_SITE_KEY
         ),
         'cookies'     => array(),
         'sslverify'   => false
@@ -120,7 +120,6 @@ if (!empty($_GET['code'])) {
         foreach ($wpRoles as $role) {
             $user->add_role($role);
         }
-
     } else {
         // Already Registered... Log the User In
         $random_password = __('User already exists.  Password inherited.');
