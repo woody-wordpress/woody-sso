@@ -101,11 +101,11 @@ class WOODY_SSO_Client
     {
         if (is_user_logged_in()) {
             $options = get_option('woody_sso_options');
-            $access_token_expiration = $_COOKIE['woody_sso_expiration_token'];
+            $access_token_expiration = (int) $_COOKIE['woody_sso_expiration_token'];
             $refresh_token = $_COOKIE['woody_sso_refresh_token'];
 
             // If current token is going to expire, refresh token
-            if ($access_token_expiration > time() - 300 && $access_token_expiration < time()) {
+            if ( time() > $access_token_expiration - 300 && time() < $access_token_expiration ) {
                 // REFRESH TOKEN
                 $params = array(
                     'grant_type' => 'refresh_token',
