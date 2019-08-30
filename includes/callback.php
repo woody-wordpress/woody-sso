@@ -56,7 +56,7 @@ if (!empty($_GET['code'])) {
             'client_id'     => $options['client_id'],
             'client_secret' => $options['client_secret'],
             'redirect_uri'  => site_url('/oauth/v2/auth?auth=sso'),
-            'idp_application' => 'woody' . WP_ENV,
+            'idp_application' => 'woody_' . WP_ENV,
             'site_key'      => WP_SITE_KEY
         ),
         'cookies'     => array(),
