@@ -75,9 +75,9 @@ class WOODY_SSO_Client
 
             if (is_wp_error($response)) {
                 $error_message = $response->get_error_message();
-                echo "Failed : $error_message".PHP_EOL;
+                echo sprintf('Failed: %s not authorized to connect to the SSO (%s)', $domain, $error_message).PHP_EOL;
             } else {
-                echo 'Success'.PHP_EOL;
+                echo sprintf('Success: "%s" authorized to connect to the SSO', $domain).PHP_EOL;
             }
         }
     }
