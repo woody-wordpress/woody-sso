@@ -35,13 +35,13 @@ class WOODY_SSO_Client
         add_action('wp_logout', array($this, 'logout'));
         add_shortcode('sso_button', array($this, 'shortcode'));
 
-        \WP_CLI::add_command('woody_add_sso_domain', [$this, 'addSsoUrl']);
+        \WP_CLI::add_command('woody_add_sso_domains', [$this, 'woodyAddSsoDomains']);
     }
 
     /**
      * Register site domain to SSO server
      */
-    public static function addSsoUrl()
+    public static function woodyAddSsoDomains()
     {
         //Retrieve site domains
         $domains = [];
