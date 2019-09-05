@@ -34,6 +34,57 @@ class WOODY_SSO_Client
         add_action('login_form', array($this, 'form_button'));
         add_action('wp_logout', array($this, 'logout'));
         add_shortcode('sso_button', array($this, 'shortcode'));
+
+        \WP_CLI::add_command('add_sso_domain', [$this, 'addSsoUrl']);
+    }
+
+    /**
+     * Register site domain to SSO server
+     */
+    public static function addSsoUrl(){
+
+        //Retrieve site domains
+        $domains = [];
+        $polylang = get_option('polylang');
+        if ($polylang['force_lang'] == 3 && !empty($polylang['domains'])) {
+            foreach ($polylang['domains'] as $lang => $domain) {
+                $domains[$lang] = parse_url($domain, PHP_URL_HOST);
+            }
+        } else {
+            $domains['all'] = parse_url(WP_HOME, PHP_URL_HOST);
+        }
+
+
+
+        foreach($domains as $domain){
+            //Call idp to activate domain
+            $response = wp_remote_post(
+                'https://connect.studio.raccourci.fr/admin/wordpress',
+                array(
+                    'method' => 'POST',
+                    'body' => array(
+                        "token" => WOODY_SOO_ADD_URL_TOKEN,
+                        "clientname" => "api-ts",
+                        "productname" => "wordpress",
+                        "instancename" => $domain
+                    ),
+                    'timeout' => 15,
+                    'headers' => array(
+                      'Content-Type' => 'application/json',
+                    ),
+                )
+            );       
+  
+            if ( is_wp_error( $response ) ) {
+                $error_message = $response->get_error_message();
+                echo "Failed : $error_message".PHP_EOL;
+            } else {
+                echo 'Success'.PHP_EOL;
+            }
+ 
+
+  
+        }
     }
 
     /**
