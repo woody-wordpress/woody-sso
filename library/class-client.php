@@ -35,14 +35,14 @@ class WOODY_SSO_Client
         add_action('wp_logout', array($this, 'logout'));
         add_shortcode('sso_button', array($this, 'shortcode'));
 
-        \WP_CLI::add_command('add_sso_domain', [$this, 'addSsoUrl']);
+        \WP_CLI::add_command('woody_add_sso_domain', [$this, 'addSsoUrl']);
     }
 
     /**
      * Register site domain to SSO server
      */
-    public static function addSsoUrl(){
-
+    public static function addSsoUrl()
+    {
         //Retrieve site domains
         $domains = [];
         $polylang = get_option('polylang');
@@ -54,9 +54,7 @@ class WOODY_SSO_Client
             $domains['all'] = parse_url(WP_HOME, PHP_URL_HOST);
         }
 
-
-
-        foreach($domains as $domain){
+        foreach ($domains as $domain) {
             //Call idp to activate domain
             $response = wp_remote_post(
                 'https://connect.studio.raccourci.fr/admin/wordpress',
@@ -73,17 +71,14 @@ class WOODY_SSO_Client
                       'Content-Type' => 'application/json',
                     ),
                 )
-            );       
-  
-            if ( is_wp_error( $response ) ) {
+            );
+
+            if (is_wp_error($response)) {
                 $error_message = $response->get_error_message();
                 echo "Failed : $error_message".PHP_EOL;
             } else {
                 echo 'Success'.PHP_EOL;
             }
- 
-
-  
         }
     }
 
@@ -156,7 +151,7 @@ class WOODY_SSO_Client
             $refresh_token = $_COOKIE['woody_sso_refresh_token'];
 
             // If current token is going to expire, refresh token
-            if ( time() > $access_token_expiration - 300 && time() < $access_token_expiration ) {
+            if (time() > $access_token_expiration - 300 && time() < $access_token_expiration) {
                 // REFRESH TOKEN
                 $params = array(
                     'grant_type' => 'refresh_token',
