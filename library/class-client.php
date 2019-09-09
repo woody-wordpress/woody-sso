@@ -61,23 +61,23 @@ class WOODY_SSO_Client
                 array(
                     'method' => 'POST',
                     'body' => array(
-                        "token" => WOODY_SOO_ADD_URL_TOKEN,
+                        "token" => WOODY_SSO_ADD_URL_TOKEN,
                         "clientname" => "api-ts",
                         "productname" => "wordpress",
                         "instancename" => $domain
                     ),
                     'timeout' => 15,
                     'headers' => array(
-                      'Content-Type' => 'application/json',
+                        'Content-Type' => 'application/json',
                     ),
                 )
             );
 
             if (is_wp_error($response)) {
                 $error_message = $response->get_error_message();
-                echo sprintf('Failed: %s not authorized to connect to the SSO (%s)', $domain, $error_message).PHP_EOL;
+                echo sprintf('Failed: %s not authorized to connect to the SSO (%s)', $domain, $error_message) . PHP_EOL;
             } else {
-                echo sprintf('Success: "%s" authorized to connect to the SSO', $domain).PHP_EOL;
+                echo sprintf('Success: "%s" authorized to connect to the SSO', $domain) . PHP_EOL;
             }
         }
     }
