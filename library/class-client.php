@@ -60,12 +60,12 @@ class WOODY_SSO_Client
                 'https://connect.studio.raccourci.fr/admin/wordpress',
                 array(
                     'method' => 'POST',
-                    'body' => array(
+                    'body' => json_encode(array(
                         "token" => WOODY_SSO_ADD_URL_TOKEN,
                         "clientname" => "api-ts",
                         "productname" => "wordpress",
                         "instancename" => $domain
-                    ),
+                    )),
                     'timeout' => 15,
                     'headers' => array(
                         'Content-Type' => 'application/json',
@@ -73,11 +73,18 @@ class WOODY_SSO_Client
                 )
             );
 
-            if (is_wp_error($response)) {
+            if (is_wp_error($response) || empty($response['body'])) {
                 $error_message = $response->get_error_message();
                 echo sprintf('Failed: %s not authorized to connect to the SSO (%s)', $domain, $error_message) . PHP_EOL;
             } else {
-                echo sprintf('Success: "%s" authorized to connect to the SSO', $domain) . PHP_EOL;
+                $body = json_decode($response['body'], true);
+                if (empty($body) || empty($body['message'])) {
+                    echo sprintf('Failed: %s not authorized to connect to the SSO (%s)', $domain) . PHP_EOL;
+                } elseif ($body['message'] != 'OK') {
+                    echo sprintf('Failed: %s not authorized to connect to the SSO (%s)', $domain, $body['message']) . PHP_EOL;
+                } else {
+                    echo sprintf('Success: "%s" authorized to connect to the SSO', $domain) . PHP_EOL;
+                }
             }
         }
     }
