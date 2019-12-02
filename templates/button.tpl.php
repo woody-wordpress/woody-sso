@@ -4,6 +4,7 @@
     }
 
     body.login #nav,
+    body.login .user-pass-wrap,
     body.login form p {
         display: none;
     }
