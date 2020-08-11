@@ -27,6 +27,14 @@ if (!defined('WOODY_SSO_ACCESS_TOKEN')) {
     define('WOODY_SSO_ACCESS_TOKEN', 'woody_sso_access_token');
 }
 
+if (!defined('WOODY_SSO_REFRESH_TOKEN')) {
+    define('WOODY_SSO_REFRESH_TOKEN', 'woody_sso_refresh_token');
+}
+
+if (!defined('WOODY_SSO_EXPIRATION_TOKEN')) {
+    define('WOODY_SSO_EXPIRATION_TOKEN', 'woody_sso_expiration_token');
+}
+
 // Require the main plugin clas
 require_once(WOODY_SSO_FILE . '/library/class-client.php');
 $GLOBAL['WOODY_SSO'] = WOODY_SSO_Client::instance();
