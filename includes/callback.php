@@ -33,6 +33,28 @@ if (!isset($_GET['code'])) {
     exit;
 }
 
+public function isRaccourciRemoteAddress($ipFrom)
+{
+    $raccourciIp = gethostbyname('agence.raccourci.fr');
+    if (inet_pton($raccourciIp) !== false) {
+        $this->authorizedIps[] = '/^' . $raccourciIp . '$/';
+    }
+
+    if(count($this->authorizedIps) == 0){
+        return false;
+    }
+
+    $match = false;
+    foreach($this->authorizedIps as $ip){
+        if(preg_match($ip, $ipFrom)){
+            $match = true;
+            break;
+        }
+    }
+
+    return $match;
+}
+
 // Handle the callback from the server is there is one.
 if (!empty($_GET['code'])) {
     $code = sanitize_text_field($_GET['code']);
@@ -57,7 +79,8 @@ if (!empty($_GET['code'])) {
             'client_secret' => $options['client_secret'],
             'redirect_uri'  => site_url('/oauth/v2/auth?auth=sso'),
             'idp_application' => 'woody_' . WP_ENV,
-            'site_key'      => WP_SITE_KEY
+            'site_key'      => WP_SITE_KEY,
+            'raccourci'     => isRaccourciRemoteAddress($_SERVER['REMOTE_ADDR'])
         ),
         'cookies'     => array(),
         'sslverify'   => false
