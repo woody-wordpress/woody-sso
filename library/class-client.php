@@ -33,6 +33,7 @@ class WOODY_SSO_Client
         add_action('init', array($this, 'refreshToken'));
         add_action('login_form', array($this, 'form_button'));
         add_action('wp_logout', array($this, 'logout'));
+        add_filter('woody_theme_siteconfig', [$this, 'woodyThemeSiteconfig']);
         add_shortcode('sso_button', array($this, 'shortcode'));
 
         \WP_CLI::add_command('woody_add_sso_domains', [$this, 'woodyAddSsoDomains']);
@@ -189,5 +190,14 @@ class WOODY_SSO_Client
                 curl_close($curl);
             }
         }
+    }
+
+    public function woodyThemeSiteconfig($siteConfig)
+    {
+        if (is_admin() && !empty($_COOKIE[WOODY_SSO_ACCESS_TOKEN])) {
+            $siteConfig['woody_sso_access_token'] = $_COOKIE[WOODY_SSO_ACCESS_TOKEN];
+        }
+
+        return $siteConfig;
     }
 }
