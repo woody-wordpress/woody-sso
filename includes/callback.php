@@ -160,10 +160,9 @@ if (!empty($_GET['code'])) {
         setcookie(WOODY_SSO_REFRESH_TOKEN, $tokens->refresh_token, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
         setcookie(WOODY_SSO_EXPIRATION_TOKEN, time() + $tokens->expires_in, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
         do_action('wp_login', $user->user_login, $user);
-        wp_redirect($user_redirect);
+        header("Location: $user_redirect", true, 302);
         exit;
     }
-
 
     exit('Single Sign On Failed.');
 }
