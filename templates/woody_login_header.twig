@@ -1,0 +1,34 @@
+<style>
+    #woody-login {
+        width: 200px;
+        padding: 5% 0 0;
+        margin: auto;
+    }
+
+    #woody-login a:focus{
+        outline: none;
+    }
+
+    #woody-login a:hover{
+        opacity: .5;
+    }
+
+    #woody-login img{
+        width: 100%;
+        max-height: 120px;
+    }
+
+    body.login #backtoblog,
+    body.login #nav,
+    body.login h1 {
+        display: none;
+    }
+
+    body.login #login {
+        padding: 0;
+    }
+</style>
+
+<div id="woody-login">
+    <a href="{{ home_url }}"><img src="{{ logo_website }}" /></a>
+</div>
