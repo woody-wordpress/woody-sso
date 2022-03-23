@@ -117,22 +117,7 @@ class WOODY_SSO_Client
      */
     public static function loginFooter()
     {
-        $error_message = null;
-        if (!empty($_GET['error'])) {
-            switch ($_GET['error']) {
-                case 'restricted-access':
-                    $error_message = 'Vous ne disposez pas des droits suffisants pour accéder à ce site';
-                    break;
-                default:
-                    $error_message = 'Une erreur inconnue est survenue';
-                    break;
-            }
-        }
-
-        $params = ['error_message' => $error_message, 'auth_sso_url' => site_url('?auth=sso'), 'hide_default_login' => true];
-        $params = apply_filters('woody_sso_login_footer', $params);
-
-        print \Timber::compile('woody_login_footer.twig', $params);
+        print \Timber::compile('woody_login_footer.twig');
     }
 
     /**
@@ -148,7 +133,25 @@ class WOODY_SSO_Client
             $logo_website = '../img/wp-admin/loader_woody.png';
         }
 
-        $params = ['home_url' => home_url(), 'logo_website' => $logo_website];
+        $error_message = null;
+        if (!empty($_GET['error'])) {
+            switch ($_GET['error']) {
+                case 'restricted-access':
+                    $error_message = 'Vous ne disposez pas des droits suffisants pour accéder à ce site';
+                    break;
+                default:
+                    $error_message = 'Une erreur inconnue est survenue';
+                    break;
+            }
+        }
+
+        $params = [
+            'home_url' => home_url(),
+            'logo_website' => $logo_website,
+            'error_message' => $error_message,
+            'auth_sso_url' => site_url('?auth=sso'),
+            'hide_default_login' => true
+        ];
         $params = apply_filters('woody_sso_login_header', $params);
 
         print \Timber::compile('woody_login_header.twig', $params);

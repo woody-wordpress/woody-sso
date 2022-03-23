@@ -1,55 +1,5 @@
-<style>
-    {% if hide_default_login == true %}
-    body.login form,
-    body.login #nav,
-    body.login .user-pass-wrap,
-    body.login form p {
-        display: none;
-    }
-    {% endif %}
-
-    body.login .language-switcher {
-        display: none;
-    }
-
-    body.login .idp-login {
-        width: 320px;
-        padding: 0;
-        margin: auto;
-    }
-
-    body.login .idp-button {
-        margin-top: 20px;
-        margin-left: 0;
-        padding: 30px;
-        font-weight: 400;
-        overflow: hidden;
-        background: #fff;
-        border: 1px solid #c3c4c7;
-        box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
-    }
-
-    body.login .idp-button a {
-        color: #333;
-        border-color: #333;
-        width: 100%;
-        text-align: center;
-        float: none;
-    }
-</style>
-
-<div class="idp-login">
-    <div class="idp-button">
-        <a class="button button-large" href="{{ auth_sso_url }}">Se connecter avec LE STUDIO</a>
-    </div>
-</div>
-
 <script type="text/javascript">
     var scr = document.createElement("script");
     scr.src = "https://connect.studio.raccourci.fr/oauth/v2/logout";
     document.body.appendChild(scr);
 </script>
-
-{% if error_message|default %}
-<div id="login_error" style="clear:both;margin-top:15px;">{{ error_message }}</div>
-{% endif %}
