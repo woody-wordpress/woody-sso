@@ -1,0 +1,113 @@
+<style>
+    #woody-logo {
+        width: 200px;
+        padding: 5% 0 0;
+        margin: 30px auto;
+    }
+
+    #woody-logo a:hover{
+        opacity: .5;
+    }
+
+    #woody-logo img{
+        width: 100%;
+        max-height: 120px;
+    }
+
+    body.login h1,
+    body.login #backtoblog,
+    body.login .language-switcher {
+        display: none;
+    }
+
+    body.login form {
+        margin: 0;
+    }
+
+    #woody-tabs,
+    #woody-login {
+        width: 320px;
+        padding: 0;
+        margin: 0 auto;
+    }
+
+    #woody-login .woody-button {
+        margin-left: 0;
+        padding: 30px;
+        font-weight: 400;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #c3c4c7;
+        box-shadow: 0 1px 3px rgb(0 0 0 / 4%);
+    }
+
+    #woody-login .woody-button a {
+        color: #333;
+        border-color: #333;
+        width: 100%;
+        text-align: center;
+        float: none;
+    }
+
+    {% if hide_default_login == true %}
+    body.login #login {
+        display: none;
+    }
+    {% else %}
+    body.login #login {
+        padding: 0;
+    }
+
+    #woody-tabs .tabs{
+        display: flex;
+    }
+
+    #woody-tabs .tabs a {
+        background: #fff;
+        border-top: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+        border-left: 1px solid #ccc;
+        border-bottom: 1px solid #fff;
+        margin-bottom: -1px;
+        margin-right: 5px;
+        padding: 5px 10px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    #woody-tabs .tabs a.woody-login {
+        background: #333;
+        border-bottom: 1px solid #333;
+        color: #fff;
+    }
+
+    #woody-login:not(:target),
+    #woody-login:target ~ #login {
+        display: none;
+    }
+
+    {% endif %}
+</style>
+
+<div id="woody-logo">
+    <a href="{{ home_url }}"><img src="{{ logo_website }}" /></a>
+</div>
+
+{% if hide_default_login == false %}
+<div id="woody-tabs">
+    <div class="tabs">
+        <a href="#login" class="login">Consulter</a>
+        <a href="#woody-login" class="woody-login">Administrer</a>
+    </div>
+</div>
+{% endif %}
+
+<div id="woody-login">
+    <div class="woody-button">
+        <a class="button button-large" href="{{ auth_sso_url }}">Se connecter avec LE STUDIO</a>
+    </div>
+
+    {% if error_message|default %}
+    <div id="login_error" style="clear:both;margin-top:15px;">{{ error_message }}</div>
+    {% endif %}
+</div>
