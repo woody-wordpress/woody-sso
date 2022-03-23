@@ -19,8 +19,8 @@
 
 defined('ABSPATH') or die('No script kiddies please!');
 
-if (!defined('WOODY_SSO_FILE')) {
-    define('WOODY_SSO_FILE', plugin_dir_path(__FILE__));
+if (!defined('WOODY_ADDON_DIR_ROOT')) {
+    define('WOODY_ADDON_DIR_ROOT', plugin_dir_path(__FILE__));
 }
 
 if (!defined('WOODY_SSO_ACCESS_TOKEN')) {
@@ -36,5 +36,9 @@ if (!defined('WOODY_SSO_EXPIRATION_TOKEN')) {
 }
 
 // Require the main plugin clas
-require_once(WOODY_SSO_FILE . '/library/class-client.php');
+require_once(WOODY_ADDON_DIR_ROOT . '/library/class-rewrites.php');
+new WOODY_SSO_Rewrites();
+
+// Require the main plugin clas
+require_once(WOODY_ADDON_DIR_ROOT . '/library/class-client.php');
 $GLOBAL['WOODY_SSO'] = WOODY_SSO_Client::instance();

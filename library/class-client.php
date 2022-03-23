@@ -29,9 +29,11 @@ class WOODY_SSO_Client
 
     public function __construct()
     {
-        add_action("init", array($this, "includes"));
         add_action('init', array($this, 'refreshToken'));
-        add_action('login_form', array($this, 'form_button'));
+        add_action('login_footer', array($this, 'loginFooter'));
+        add_action('login_header', array($this, 'loginHeader'));
+        add_filter('timber_locations', [$this, 'injectTimberLocation']);
+
         add_action('wp_logout', array($this, 'logout'));
         add_filter('woody_theme_siteconfig', [$this, 'woodyThemeSiteconfig']);
         add_shortcode('sso_button', array($this, 'shortcode'));
@@ -103,23 +105,56 @@ class WOODY_SSO_Client
         return self::$_instance;
     }
 
-    /**
-     * plugin includes called during load of plugin
-     * @return void
-     */
-    public static function includes()
+    public function injectTimberLocation($locations)
     {
-        require_once(WOODY_SSO_FILE . '/includes/rewrites.php');
-        new WOODY_SSO_Rewrites();
+        $locations[] = WOODY_ADDON_DIR_ROOT . '/templates';
+        return $locations;
     }
 
     /**
      * Add login button for SSO on the login form.
      * @link https://codex.wordpress.org/Plugin_API/Action_Reference/login_form
      */
-    public static function form_button()
+    public static function loginFooter()
     {
-        require_once(WOODY_SSO_FILE . '/templates/button.tpl.php');
+        print \Timber::compile('woody_login_footer.twig');
+    }
+
+    /**
+     * Add login button for SSO on the login form.
+     * @link https://codex.wordpress.org/Plugin_API/Action_Reference/login_form
+     */
+    public static function loginHeader()
+    {
+        $logo_website_path = get_stylesheet_directory() . '/logo.svg';
+        if (file_exists($logo_website_path)) {
+            $logo_website = str_replace('style.css', 'logo.svg', get_stylesheet_uri());
+        } else {
+            $logo_website = '../img/wp-admin/loader_woody.png';
+        }
+
+        $error_message = null;
+        if (!empty($_GET['error'])) {
+            switch ($_GET['error']) {
+                case 'restricted-access':
+                    $error_message = 'Vous ne disposez pas des droits suffisants pour accéder à ce site';
+                    break;
+                default:
+                    $error_message = 'Une erreur inconnue est survenue';
+                    break;
+            }
+        }
+
+        $params = [
+            'home_url' => home_url(),
+            'logo_website' => $logo_website,
+            'error_message' => $error_message,
+            'auth_sso_url' => site_url('?auth=sso'),
+            'hide_default_login' => true
+        ];
+        $params = apply_filters('woody_sso_login_header', $params);
+
+        print \Timber::compile('woody_login_header.twig', $params);
     }
 
     /**
