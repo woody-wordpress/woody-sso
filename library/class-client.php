@@ -126,11 +126,14 @@ class WOODY_SSO_Client
      */
     public static function loginHeader()
     {
-        $logo_website_path = get_stylesheet_directory() . '/logo.svg';
-        if (file_exists($logo_website_path)) {
+        $logo_website_path_svg = get_stylesheet_directory() . '/logo.svg';
+        $logo_website_path_png = get_stylesheet_directory() . '/logo.png';
+        if (file_exists($logo_website_path_svg)) {
             $logo_website = str_replace('style.css', 'logo.svg', get_stylesheet_uri());
+        } elseif (file_exists($logo_website_path_png)) {
+            $logo_website = str_replace('style.css', 'logo.png', get_stylesheet_uri());
         } else {
-            $logo_website = '../img/wp-admin/loader_woody.png';
+            $logo_website = '/app/plugins/woody-sso/img/logo.svg';
         }
 
         $error_message = null;
