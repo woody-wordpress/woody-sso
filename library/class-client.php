@@ -29,14 +29,15 @@ class WOODY_SSO_Client
 
     public function __construct()
     {
-        add_action('init', array($this, 'refreshToken'));
-        add_action('login_footer', array($this, 'loginFooter'));
-        add_action('login_header', array($this, 'loginHeader'));
+        add_action('init', [$this, 'refreshToken']);
+        add_action('login_footer', [$this, 'loginFooter']);
+        add_action('login_header', [$this, 'loginHeader']);
         add_filter('timber_locations', [$this, 'injectTimberLocation']);
 
-        add_action('wp_logout', array($this, 'logout'));
+        add_action('wp_logout', [$this, 'logout']);
         add_filter('woody_theme_siteconfig', [$this, 'woodyThemeSiteconfig']);
-        add_shortcode('sso_button', array($this, 'shortcode'));
+        add_shortcode('sso_button', [$this, 'shortcode']);
+        add_action('wp_dashboard_setup', [$this, 'wpDashboardSetup']);
 
         \WP_CLI::add_command('woody_add_sso_domains', [$this, 'woodyAddSsoDomains']);
     }
@@ -44,7 +45,7 @@ class WOODY_SSO_Client
     /**
      * Register site domain to SSO server
      */
-    public static function woodyAddSsoDomains()
+    public function woodyAddSsoDomains()
     {
         //Retrieve site domains
         $domains = [];
@@ -115,7 +116,7 @@ class WOODY_SSO_Client
      * Add login button for SSO on the login form.
      * @link https://codex.wordpress.org/Plugin_API/Action_Reference/login_form
      */
-    public static function loginFooter()
+    public function loginFooter()
     {
         print \Timber::compile('woody_login_footer.twig');
     }
@@ -124,7 +125,7 @@ class WOODY_SSO_Client
      * Add login button for SSO on the login form.
      * @link https://codex.wordpress.org/Plugin_API/Action_Reference/login_form
      */
-    public static function loginHeader()
+    public function loginHeader()
     {
         $logo_website_path_svg = get_stylesheet_directory() . '/logo.svg';
         $logo_website_path_png = get_stylesheet_directory() . '/logo.png';
@@ -163,7 +164,7 @@ class WOODY_SSO_Client
     /**
      * Login Button Shortcode
      */
-    public static function shortcode($atts)
+    public function shortcode($atts)
     {
         $a = shortcode_atts(array(
             'type'   => 'primary',
@@ -179,7 +180,7 @@ class WOODY_SSO_Client
     /**
      * Get user login redirect. Just in case the user wants to redirect the user to a new url.
      */
-    public static function logout()
+    public function logout()
     {
         setcookie(WOODY_SSO_ACCESS_TOKEN, '', time() - YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
         setcookie(WOODY_SSO_REFRESH_TOKEN, '', time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
@@ -237,5 +238,68 @@ class WOODY_SSO_Client
         }
 
         return $siteConfig;
+    }
+
+    /**
+     * Login Widget
+     */
+    public function wpDashboardSetup()
+    {
+        if (is_user_logged_in()) {
+            $user = wp_get_current_user();
+            if (in_array('administrator', $user->roles)) {
+                wp_add_dashboard_widget(
+                    'woody-sso', // Widget slug.
+                    'Woody SSO', // Title.
+                    [$this, 'loginWidget'] // Display function.
+                );
+            }
+        }
+    }
+
+    public function loginWidget()
+    {
+        $ip = $this->getRemoteAddress();
+        $host = $this->isRaccourciRemoteAddress($ip);
+        print \Timber::compile('woody_login_widget.twig', ['ip' => $ip, 'host' => $host]);
+    }
+
+    private function getRemoteAddress()
+    {
+        if (!empty($_SERVER['HTTP_X_REAL_IP'])) {
+            return trim(current(explode(',', $_SERVER['HTTP_X_REAL_IP'])));
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return trim(current(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])));
+        }
+    }
+
+    private function isRaccourciRemoteAddress($ip)
+    {
+        $schemes = [
+            'local' => '/^192.168/',
+            'docker' => '/^172.20/',
+            'internal' => '/^10\./',
+        ];
+        $networks = [
+            'agence.raccourci.fr',
+            'sfr.agence.raccourci.fr',
+            'orange.agence.raccourci.fr',
+            '4g.agence.raccourci.fr',
+            'vpnovh.raccourci.fr'
+        ];
+
+        foreach ($networks as $network) {
+            $host = gethostbyname($network);
+            if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) && inet_pton($host) !== false) {
+                $schemes[$network] = '/^' . $host . '$/';
+            }
+        }
+
+        foreach ($schemes as $host => $scheme) {
+            $match = preg_match($scheme, $ip);
+            if ($match) {
+                return $host;
+            }
+        }
     }
 }
