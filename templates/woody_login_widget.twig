@@ -1,0 +1,20 @@
+{% if host is empty %}
+    <p>
+        Vous n'êtes pas connecté via le réseau Raccourci 🔴<br>
+        Votre connexion IDP est donc persistante.<br>
+        <span style="font-size:10px;color:#ccc">IP : {{ ip }}</span>
+    </p>
+{% else %}
+    <p>
+        Vous êtes connecté via le réseau Raccourci 🟢<br>
+        Votre connexion IDP a été reinitialisée.<br>
+        <span style="font-size:10px;color:#ccc">Réseau : {{ host }} / IP : {{ ip }}</span>
+    </p>
+
+    <script type="text/javascript">
+        var scr = document.createElement("script");
+        scr.src = "https://connect.studio.raccourci.fr/oauth/v2/logout";
+        document.body.appendChild(scr);
+    </script>
+{% endif %}
+
