@@ -7,11 +7,12 @@
         justify-content: space-evenly;
     }
 
-    #woody-logo a:hover{
+    #woody-logo a:hover {
         opacity: .5;
+        width: 200px;
     }
 
-    #woody-logo img{
+    #woody-logo img {
         width: 100%;
         height: auto;
         max-height: 120px;
@@ -52,16 +53,23 @@
         float: none;
     }
 
-    {% if hide_default_login == true %}
+        {
+        % if hide_default_login==true %
+    }
+
     body.login #login {
         display: none;
     }
-    {% else %}
+
+        {
+        % else %
+    }
+
     body.login #login {
         padding: 0;
     }
 
-    #woody-tabs .tabs{
+    #woody-tabs .tabs {
         display: flex;
     }
 
@@ -85,11 +93,13 @@
     }
 
     #woody-login:not(:target),
-    #woody-login:target ~ #login {
+    #woody-login:target~#login {
         display: none;
     }
 
-    {% endif %}
+        {
+        % endif %
+    }
 </style>
 
 <div id="woody-logo">
