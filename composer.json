@@ -1,7 +1,7 @@
 {
     "name": "woody-wordpress/woody-sso",
     "type": "wordpress-plugin",
-    "version": "1.8.1",
+    "version": "1.8.2",
     "description": "This plugin replaces the native wordpress connection system with the SSO (single sign on) button of Raccourci Agency: THE STUDIO",
     "license": "GPL-2.0",
     "authors": [
