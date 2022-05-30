@@ -53,17 +53,13 @@
         float: none;
     }
 
-        {
-        % if hide_default_login==true %
-    }
+{% if hide_default_login == true %}
 
     body.login #login {
         display: none;
     }
 
-        {
-        % else %
-    }
+{% else %}
 
     body.login #login {
         padding: 0;
@@ -97,9 +93,7 @@
         display: none;
     }
 
-        {
-        % endif %
-    }
+{% endif %}
 </style>
 
 <div id="woody-logo">
