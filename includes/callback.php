@@ -77,10 +77,8 @@ if (!empty($_GET['code'])) {
         'sslverify'   => false
     ));
 
-    $user_info = json_decode($response['body']);
-    $user_id = username_exists($user_info->login);
-
     $wpRoles = [];
+    $user_info = json_decode($response['body']);
     if (!empty($user_info)) {
         if (in_array('wp_admin', $user_info->roles)) {
             $wpRoles = ['administrator'];
@@ -103,7 +101,19 @@ if (!empty($_GET['code'])) {
         exit;
     }
 
-    if (!$user_id && email_exists($user_info->email) == false) {
+    // Search User inside Wordpress
+    $user = get_user_by('login', $user_info->login);
+    if (!($user instanceof WP_User)) {
+        $user = get_user_by('login', $user_info->email);
+    }
+    if (!($user instanceof WP_User)) {
+        $user = get_user_by('email', $user_info->login);
+    }
+    if (!($user instanceof WP_User)) {
+        $user = get_user_by('email', $user_info->email);
+    }
+
+    if (!($user instanceof WP_User)) {
         // Does not have an account... Register and then log the user in
         $random_password = wp_generate_password($length = 12, $include_standard_special_chars = false);
         $user_id = wp_create_user($user_info->login, $random_password, $user_info->email);
@@ -123,7 +133,6 @@ if (!empty($_GET['code'])) {
     } else {
         // Already Registered... Log the User In
         $random_password = __('User already exists.  Password inherited.');
-        $user = get_user_by('login', $user_info->login);
         $userInfos = get_userdata($user->ID);
 
         // remove old roles
