@@ -69,7 +69,7 @@ class WOODY_SSO_Client
                         "clientname" => "api-ts",
                         "productname" => "wordpress",
                         "instancename" => $domain
-                    )),
+                    ), JSON_THROW_ON_ERROR),
                     'timeout' => 15,
                     'headers' => array(
                         'Content-Type' => 'application/json',
@@ -81,7 +81,7 @@ class WOODY_SSO_Client
                 $error_message = $response->get_error_message();
                 echo sprintf('Failed: %s not authorized to connect to the SSO (%s)', $domain, $error_message) . PHP_EOL;
             } else {
-                $body = json_decode($response['body'], true);
+                $body = json_decode($response['body'], true, 512, JSON_THROW_ON_ERROR);
                 if (empty($body) || empty($body['message'])) {
                     echo sprintf('Failed: %s not authorized to connect to the SSO (%s)', $domain) . PHP_EOL;
                 } elseif ($body['message'] != 'OK') {
@@ -182,9 +182,9 @@ class WOODY_SSO_Client
      */
     public function logout()
     {
-        setcookie(WOODY_SSO_ACCESS_TOKEN, '', time() - YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
-        setcookie(WOODY_SSO_REFRESH_TOKEN, '', time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
-        setcookie(WOODY_SSO_EXPIRATION_TOKEN, '', time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+        setcookie(WOODY_SSO_ACCESS_TOKEN, '', ['expires' => time() - YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
+        setcookie(WOODY_SSO_REFRESH_TOKEN, '', ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
+        setcookie(WOODY_SSO_EXPIRATION_TOKEN, '', ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
     }
 
     /**
@@ -218,12 +218,12 @@ class WOODY_SSO_Client
                 );
                 curl_setopt_array($curl, $args);
 
-                $tokens = json_decode(curl_exec($curl));
+                $tokens = json_decode(curl_exec($curl), null, 512, JSON_THROW_ON_ERROR);
 
                 if ($tokens) {
-                    setcookie(WOODY_SSO_ACCESS_TOKEN, $tokens->access_token, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
-                    setcookie(WOODY_SSO_REFRESH_TOKEN, $tokens->refresh_token, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
-                    setcookie(WOODY_SSO_EXPIRATION_TOKEN, time() + $tokens->expires_in, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+                    setcookie(WOODY_SSO_ACCESS_TOKEN, $tokens->access_token, ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
+                    setcookie(WOODY_SSO_REFRESH_TOKEN, $tokens->refresh_token, ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
+                    setcookie(WOODY_SSO_EXPIRATION_TOKEN, time() + $tokens->expires_in, ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
                 }
 
                 curl_close($curl);

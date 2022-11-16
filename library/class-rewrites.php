@@ -47,7 +47,7 @@ class WOODY_SSO_Rewrites
     {
         global $wp_query;
         if ($wp_query->get('auth') && $wp_query->get('auth') == 'sso') {
-            require_once(dirname(dirname(__FILE__)) . '/includes/callback.php');
+            require_once(dirname(__FILE__, 2) . '/includes/callback.php');
             exit;
         }
     }
