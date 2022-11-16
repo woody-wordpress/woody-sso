@@ -153,7 +153,7 @@ class WOODY_SSO_Client
             'home_url' => home_url(),
             'logo_website' => $logo_website,
             'error_message' => $error_message,
-            'auth_sso_url' => site_url('?auth=sso'),
+            'auth_sso_url' => home_url('?auth=sso'),
             'hide_default_login' => true
         ];
         $params = apply_filters('woody_sso_login_header', $params);
@@ -174,7 +174,7 @@ class WOODY_SSO_Client
             'text'   => 'Single Sign On'
         ), $atts);
 
-        return '<a class="' . $a['class'] . '" href="' . site_url('?auth=sso') . '" title="' . $a['title'] . '" target="' . $a['target'] . '">' . $a['text'] . '</a>';
+        return '<a class="' . $a['class'] . '" href="' . home_url('?auth=sso') . '" title="' . $a['title'] . '" target="' . $a['target'] . '">' . $a['text'] . '</a>';
     }
 
     /**
