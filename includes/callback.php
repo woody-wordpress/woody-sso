@@ -6,7 +6,7 @@
  * @author Jeremy LEGENDRE <jeremy.legendre@raccourci.fr>
  */
 
-defined('ABSPATH') or die('No script kiddies please!');
+defined('ABSPATH') || die('No script kiddies please!');
 
 // Redirect the user back to the home page if logged in.
 if (is_user_logged_in()) {
@@ -63,9 +63,9 @@ if (!empty($_GET['code'])) {
         'sslverify'   => false
     ));
 
-    $tokens = json_decode($response['body']);
+    $tokens = json_decode($response['body'], null, 512, JSON_THROW_ON_ERROR);
 
-    if (isset($tokens->error)) {
+    if (property_exists($tokens, 'error') && $tokens->error !== null) {
         wp_die($tokens->error_description);
     }
 
@@ -78,7 +78,7 @@ if (!empty($_GET['code'])) {
     ));
 
     $wpRoles = [];
-    $user_info = json_decode($response['body']);
+    $user_info = json_decode($response['body'], null, 512, JSON_THROW_ON_ERROR);
     if (!empty($user_info)) {
         if (in_array('wp_admin', $user_info->roles)) {
             $wpRoles = ['administrator'];
@@ -90,6 +90,7 @@ if (!empty($_GET['code'])) {
                             $wpRoles[] = str_replace('wp_', '', $role);
                         }
                     }
+
                     break;
                 }
             }
@@ -106,9 +107,11 @@ if (!empty($_GET['code'])) {
     if (!($user instanceof WP_User)) {
         $user = get_user_by('login', $user_info->email);
     }
+
     if (!($user instanceof WP_User)) {
         $user = get_user_by('email', $user_info->login);
     }
+
     if (!($user instanceof WP_User)) {
         $user = get_user_by('email', $user_info->email);
     }
@@ -165,11 +168,11 @@ if (!empty($_GET['code'])) {
     }
 
     if (is_user_logged_in()) {
-        setcookie(WOODY_SSO_ACCESS_TOKEN, $tokens->access_token, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
-        setcookie(WOODY_SSO_REFRESH_TOKEN, $tokens->refresh_token, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
-        setcookie(WOODY_SSO_EXPIRATION_TOKEN, time() + $tokens->expires_in, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+        setcookie(WOODY_SSO_ACCESS_TOKEN, $tokens->access_token, ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
+        setcookie(WOODY_SSO_REFRESH_TOKEN, $tokens->refresh_token, ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
+        setcookie(WOODY_SSO_EXPIRATION_TOKEN, time() + $tokens->expires_in, ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
         do_action('wp_login', $user->user_login, $user);
-        header("Location: $user_redirect", true, 302);
+        header(sprintf('Location: %s', $user_redirect), true, 302);
         exit;
     }
 

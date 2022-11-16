@@ -17,7 +17,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of.
  */
 
-defined('ABSPATH') or die('No script kiddies please!');
+defined('ABSPATH') || die('No script kiddies please!');
 
 if (!defined('WOODY_ADDON_DIR_ROOT')) {
     define('WOODY_ADDON_DIR_ROOT', plugin_dir_path(__FILE__));

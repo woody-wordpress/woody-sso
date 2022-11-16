@@ -6,7 +6,7 @@
  * @author Jeremy LEGENDRE <jeremy.legendre@raccourci.fr>
  */
 
-defined('ABSPATH') or die('No script kiddies please!');
+defined('ABSPATH') || die('No script kiddies please!');
 
 /**
  * WOODY_SSO_Client
@@ -14,7 +14,7 @@ defined('ABSPATH') or die('No script kiddies please!');
 class WOODY_SSO_Client
 {
     /** Server Instance */
-    public static $_instance = null;
+    public static $_instance;
 
     /** Default Settings */
     protected $default_settings = array(
@@ -69,7 +69,7 @@ class WOODY_SSO_Client
                         "clientname" => "api-ts",
                         "productname" => "wordpress",
                         "instancename" => $domain
-                    )),
+                    ), JSON_THROW_ON_ERROR),
                     'timeout' => 15,
                     'headers' => array(
                         'Content-Type' => 'application/json',
@@ -81,7 +81,7 @@ class WOODY_SSO_Client
                 $error_message = $response->get_error_message();
                 echo sprintf('Failed: %s not authorized to connect to the SSO (%s)', $domain, $error_message) . PHP_EOL;
             } else {
-                $body = json_decode($response['body'], true);
+                $body = json_decode($response['body'], true, 512, JSON_THROW_ON_ERROR);
                 if (empty($body) || empty($body['message'])) {
                     echo sprintf('Failed: %s not authorized to connect to the SSO (%s)', $domain) . PHP_EOL;
                 } elseif ($body['message'] != 'OK') {
@@ -139,13 +139,10 @@ class WOODY_SSO_Client
 
         $error_message = null;
         if (!empty($_GET['error'])) {
-            switch ($_GET['error']) {
-                case 'restricted-access':
-                    $error_message = 'Vous ne disposez pas des droits suffisants pour accéder à ce site';
-                    break;
-                default:
-                    $error_message = 'Une erreur inconnue est survenue';
-                    break;
+            if ($_GET['error'] == 'restricted-access') {
+                $error_message = 'Vous ne disposez pas des droits suffisants pour accéder à ce site';
+            } else {
+                $error_message = 'Une erreur inconnue est survenue';
             }
         }
 
@@ -153,7 +150,7 @@ class WOODY_SSO_Client
             'home_url' => home_url(),
             'logo_website' => $logo_website,
             'error_message' => $error_message,
-            'auth_sso_url' => site_url('?auth=sso'),
+            'auth_sso_url' => home_url('?auth=sso'),
             'hide_default_login' => true
         ];
         $params = apply_filters('woody_sso_login_header', $params);
@@ -174,7 +171,7 @@ class WOODY_SSO_Client
             'text'   => 'Single Sign On'
         ), $atts);
 
-        return '<a class="' . $a['class'] . '" href="' . site_url('?auth=sso') . '" title="' . $a['title'] . '" target="' . $a['target'] . '">' . $a['text'] . '</a>';
+        return '<a class="' . $a['class'] . '" href="' . home_url('?auth=sso') . '" title="' . $a['title'] . '" target="' . $a['target'] . '">' . $a['text'] . '</a>';
     }
 
     /**
@@ -182,9 +179,9 @@ class WOODY_SSO_Client
      */
     public function logout()
     {
-        setcookie(WOODY_SSO_ACCESS_TOKEN, '', time() - YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
-        setcookie(WOODY_SSO_REFRESH_TOKEN, '', time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
-        setcookie(WOODY_SSO_EXPIRATION_TOKEN, '', time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+        setcookie(WOODY_SSO_ACCESS_TOKEN, '', ['expires' => time() - YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
+        setcookie(WOODY_SSO_REFRESH_TOKEN, '', ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
+        setcookie(WOODY_SSO_EXPIRATION_TOKEN, '', ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
     }
 
     /**
@@ -218,12 +215,12 @@ class WOODY_SSO_Client
                 );
                 curl_setopt_array($curl, $args);
 
-                $tokens = json_decode(curl_exec($curl));
+                $tokens = json_decode(curl_exec($curl), null, 512, JSON_THROW_ON_ERROR);
 
                 if ($tokens) {
-                    setcookie(WOODY_SSO_ACCESS_TOKEN, $tokens->access_token, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
-                    setcookie(WOODY_SSO_REFRESH_TOKEN, $tokens->refresh_token, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
-                    setcookie(WOODY_SSO_EXPIRATION_TOKEN, time() + $tokens->expires_in, time() + YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl());
+                    setcookie(WOODY_SSO_ACCESS_TOKEN, $tokens->access_token, ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
+                    setcookie(WOODY_SSO_REFRESH_TOKEN, $tokens->refresh_token, ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
+                    setcookie(WOODY_SSO_EXPIRATION_TOKEN, time() + $tokens->expires_in, ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
                 }
 
                 curl_close($curl);

@@ -6,7 +6,7 @@
  * @author Jeremy LEGENDRE <jeremy.legendre@raccourci.fr>
  */
 
-defined('ABSPATH') or die('No script kiddies please!');
+defined('ABSPATH') || die('No script kiddies please!');
 
 /**
  * WOODY_SSO_Rewrites
@@ -25,9 +25,8 @@ class WOODY_SSO_Rewrites
     {
         global $wp_rewrite;
         $newRule  = array('auth/(.+)' => 'index.php?auth=' . $wp_rewrite->preg_index(1));
-        $newRules = $newRule + $rules;
 
-        return $newRules;
+        return $newRule + $rules;
     }
 
     public function add_query_vars($qvars)
@@ -47,7 +46,7 @@ class WOODY_SSO_Rewrites
     {
         global $wp_query;
         if ($wp_query->get('auth') && $wp_query->get('auth') == 'sso') {
-            require_once(dirname(dirname(__FILE__)) . '/includes/callback.php');
+            require_once(dirname(__FILE__, 2) . '/includes/callback.php');
             exit;
         }
     }
