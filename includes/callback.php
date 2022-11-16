@@ -6,7 +6,7 @@
  * @author Jeremy LEGENDRE <jeremy.legendre@raccourci.fr>
  */
 
-defined('ABSPATH') or die('No script kiddies please!');
+defined('ABSPATH') || die('No script kiddies please!');
 
 // Redirect the user back to the home page if logged in.
 if (is_user_logged_in()) {
@@ -65,7 +65,7 @@ if (!empty($_GET['code'])) {
 
     $tokens = json_decode($response['body'], null, 512, JSON_THROW_ON_ERROR);
 
-    if (isset($tokens->error)) {
+    if (property_exists($tokens, 'error') && $tokens->error !== null) {
         wp_die($tokens->error_description);
     }
 

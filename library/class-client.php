@@ -6,7 +6,7 @@
  * @author Jeremy LEGENDRE <jeremy.legendre@raccourci.fr>
  */
 
-defined('ABSPATH') or die('No script kiddies please!');
+defined('ABSPATH') || die('No script kiddies please!');
 
 /**
  * WOODY_SSO_Client
