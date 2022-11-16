@@ -14,7 +14,7 @@ defined('ABSPATH') || die('No script kiddies please!');
 class WOODY_SSO_Client
 {
     /** Server Instance */
-    public static $_instance = null;
+    public static $_instance;
 
     /** Default Settings */
     protected $default_settings = array(
@@ -139,13 +139,10 @@ class WOODY_SSO_Client
 
         $error_message = null;
         if (!empty($_GET['error'])) {
-            switch ($_GET['error']) {
-                case 'restricted-access':
-                    $error_message = 'Vous ne disposez pas des droits suffisants pour accéder à ce site';
-                    break;
-                default:
-                    $error_message = 'Une erreur inconnue est survenue';
-                    break;
+            if ($_GET['error'] == 'restricted-access') {
+                $error_message = 'Vous ne disposez pas des droits suffisants pour accéder à ce site';
+            } else {
+                $error_message = 'Une erreur inconnue est survenue';
             }
         }
 

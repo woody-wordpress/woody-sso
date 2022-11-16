@@ -90,6 +90,7 @@ if (!empty($_GET['code'])) {
                             $wpRoles[] = str_replace('wp_', '', $role);
                         }
                     }
+
                     break;
                 }
             }
@@ -106,9 +107,11 @@ if (!empty($_GET['code'])) {
     if (!($user instanceof WP_User)) {
         $user = get_user_by('login', $user_info->email);
     }
+
     if (!($user instanceof WP_User)) {
         $user = get_user_by('email', $user_info->login);
     }
+
     if (!($user instanceof WP_User)) {
         $user = get_user_by('email', $user_info->email);
     }
@@ -169,7 +172,7 @@ if (!empty($_GET['code'])) {
         setcookie(WOODY_SSO_REFRESH_TOKEN, $tokens->refresh_token, ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
         setcookie(WOODY_SSO_EXPIRATION_TOKEN, time() + $tokens->expires_in, ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
         do_action('wp_login', $user->user_login, $user);
-        header("Location: $user_redirect", true, 302);
+        header(sprintf('Location: %s', $user_redirect), true, 302);
         exit;
     }
 
