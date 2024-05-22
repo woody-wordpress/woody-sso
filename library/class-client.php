@@ -217,7 +217,7 @@ class WOODY_SSO_Client
 
                 $tokens = json_decode(curl_exec($curl), null, 512, JSON_THROW_ON_ERROR);
 
-                if ($tokens) {
+                if (!empty($tokens) && !empty($tokens->access_token) && !empty($tokens->refresh_token) && !empty($tokens->expires_in)) {
                     setcookie(WOODY_SSO_ACCESS_TOKEN, $tokens->access_token, ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
                     setcookie(WOODY_SSO_REFRESH_TOKEN, $tokens->refresh_token, ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
                     setcookie(WOODY_SSO_EXPIRATION_TOKEN, time() + $tokens->expires_in, ['expires' => time() + YEAR_IN_SECONDS, 'path' => COOKIEPATH, 'domain' => COOKIE_DOMAIN, 'secure' => is_ssl()]);
